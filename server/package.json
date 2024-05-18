@@ -12,6 +12,7 @@
   "description": "This is a simple todo fullstack app.",
   "dependencies": {
     "express": "^4.19.2",
+    "mongoose": "^8.4.0",
     "zod": "^3.23.8"
   }
 }
