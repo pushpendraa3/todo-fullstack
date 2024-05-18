@@ -21,7 +21,7 @@ app.get()
  * @param updateTodo 
  *      - 
  */
-app.postt()
+app.post()
 
 /**
  * @param deleteTodo 
