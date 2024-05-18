@@ -1,10 +1,12 @@
 import express from "express";
 import { createTodo, todoId } from "./types.js";
 import { todo } from "./db.js";
+import { cors } from "cors";
 
 const app = express();
 
 app.use(express.json());
+app.use(cors());
 
 /** 
  * @param createTodo 
