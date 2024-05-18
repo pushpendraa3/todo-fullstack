@@ -1,5 +1,6 @@
 import express from "express";
 import { createTodo, todoId } from "./types.js";
+import { todo } from "./db.js";
 
 const app = express();
 
@@ -9,7 +10,7 @@ app.use(express.json());
  * @param createTodo 
  *      - 
  */
-app.post("/todo", (req, res) => {
+app.post("/todo", async (req, res) => {
     const createPayload = req.body;
     const parsedPayload = createTodo.safeParse(createPayload);
     if(!parsedPayload.success){
@@ -19,19 +20,34 @@ app.post("/todo", (req, res) => {
         return;
     }
     // todo: put parsedPayload in mongoDB
+
+    await todo.create({
+        title: createPayload.title,
+        description: createPayload.description,
+        completed: false
+    })
+    res.status(201).json({
+        msg: "todo created"
+    })
 })
 
 /** 
  * @param getAllTodos 
  *      - 
  */
-app.get("/todos")
+app.get("/todo", async (req, res) => {
+    const response = await todo.find();
+    res.status(200).json({
+        msg: "success",
+        todo: response
+    })
+})
 
 /** 
  * @param updateTodo 
  *      - 
  */
-app.post("/todo/update", (req, res) => {
+app.put("/todo/update", async (req, res) => {
     const createId = req.body;
     const parsedId = todoId.safeParse(createId);
     if(!parsedId.success){
@@ -41,14 +57,21 @@ app.post("/todo/update", (req, res) => {
         return;
     }
     // todo: update todo with parsedId in mongoDB
-
+    await todo.updateOne({
+        _id: req.body.id
+    }, {
+        completed: true
+    })
+    res.status(200).json({
+        msg: "todo marked as completed"
+    })
 })
 
 /** 
  * @param deleteTodo 
  *      - 
  */
-app.delete("/todo", (req, res) => {
+app.delete("/todo", async (req, res) => {
     const createDeleteId = req.body;
     const parsedDeleteId = todoId.safeParse(createDeleteId);
     if(!parsedDeleteId.success){
@@ -58,7 +81,12 @@ app.delete("/todo", (req, res) => {
         return;
     }
     // todo: delete todo with parsedDeleteId in mongoDB
-
+    await todo.deleteOne({
+        _id: req.body.id
+    })
+    res.status(200).json({
+        msg: "todo deleted"
+    })
 })
 
 
